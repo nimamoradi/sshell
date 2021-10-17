@@ -286,8 +286,7 @@ int main(int argc, char **argv, char **envp) {
                 int rec = recv_nonblock(sock , server_reply , 2000 , 2000);
                 printf("rec is %d\n", rec);
 
-                printf("Server reply :");
-                printf("%ls \n", server_reply);
+                printf("Server reply : %ls \n", server_reply);
                 close(sock);
             }
 
