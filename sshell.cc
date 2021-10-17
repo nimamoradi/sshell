@@ -281,6 +281,7 @@ int main(int argc, char **argv, char **envp) {
             printf("response is %d\n", sock);
             if (sock > 1) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
+                printf("response is %d\n", snd);
                 close(sock);
             }
 
