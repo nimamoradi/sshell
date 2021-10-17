@@ -152,6 +152,7 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize) {
 
 int main(int argc, char **argv, char **envp) {
     size_t hsize = 0, vsize = 0; // terminal dimensions, read from
+    char* RHOST = 0, RPORT = 0; // terminal dimensions, read from
     // the config file
     char command[129];           // buffer for commands
     command[128] = '\0';
@@ -203,6 +204,10 @@ int main(int argc, char **argv, char **envp) {
             vsize = atol(com_tok[1]);
         else if (strcmp(com_tok[0], "HSIZE") == 0 && atol(com_tok[1]) > 0)
             hsize = atol(com_tok[1]);
+        else if (strcmp(com_tok[0], "RPORT") == 0 && atol(com_tok[1]) > 0)
+            RPORT = com_tok[1];
+        else if (strcmp(com_tok[0], "RHOST") == 0 && atol(com_tok[1]) > 0)
+            RHOST = com_tok[1];
         // lines that do not make sense are hereby ignored
     }
     close(confd);
@@ -277,7 +282,7 @@ int main(int argc, char **argv, char **envp) {
             char server_reply[2000];
             printf("server\n");
             // init server params
-            int sock = connectbyport("127.0.0.1", "9001");
+            int sock = connectbyport(RHOST, RPORT);
             printf("response is %d\n", sock);
             if (sock > 1) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
