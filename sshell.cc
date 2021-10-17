@@ -26,8 +26,7 @@ const char *config = "shconfig";              // configuration file
 /*
  * Typical reaper.
  */
-void zombie_reaper(int signal)
-{
+void zombie_reaper(int signal) {
     int ignore;
     while (waitpid(-1, &ignore, WNOHANG) >= 0)
         /* NOP */;
@@ -41,8 +40,7 @@ void zombie_reaper(int signal)
  * cannot just use SIG_IGN since this is not guaranteed to work
  * according to the POSIX standard on the matter.
  */
-void block_zombie_reaper(int signal)
-{
+void block_zombie_reaper(int signal) {
     /* NOP */
 }
 
@@ -56,8 +54,7 @@ void block_zombie_reaper(int signal)
  * result.  The function stops at the first match, and so it executes
  * at most one external command.
  */
-int run_it(const char *command, char *const argv[], char *const envp[], const char **path)
-{
+int run_it(const char *command, char *const argv[], char *const envp[], const char **path) {
 
     // we really want to wait for children so we inhibit the normal
     // handling of SIGCHLD
@@ -66,8 +63,7 @@ int run_it(const char *command, char *const argv[], char *const envp[], const ch
     int childp = fork();
     int status = 0;
 
-    if (childp == 0)
-    { // child does execve
+    if (childp == 0) { // child does execve
 #ifdef DEBUG
         fprintf(stderr, "%s: attempting to run (%s)", __FILE__, command);
         for (int i = 1; argv[i] != 0; i++)
@@ -75,8 +71,7 @@ int run_it(const char *command, char *const argv[], char *const envp[], const ch
         fprintf(stderr, "\n");
 #endif
         execve(command, argv, envp); // attempt to execute with no path prefix...
-        for (size_t i = 0; path[i] != 0; i++)
-        { // ... then try the path prefixes
+        for (size_t i = 0; path[i] != 0; i++) { // ... then try the path prefixes
             char *cp = new char[strlen(path[i]) + strlen(command) + 2];
             sprintf(cp, "%s/%s", path[i], command);
 #ifdef DEBUG
@@ -95,11 +90,8 @@ int run_it(const char *command, char *const argv[], char *const envp[], const ch
         perror(message);
         delete[] message;
         exit(errno); // crucial to exit so that the function does not
-                     // return twice!
-    }
-
-    else
-    { // parent just waits for child completion
+        // return twice!
+    } else { // parent just waits for child completion
         waitpid(childp, &status, 0);
         // we restore the signal handler now that our baby answered
         signal(SIGCHLD, zombie_reaper);
@@ -112,8 +104,7 @@ int run_it(const char *command, char *const argv[], char *const envp[], const ch
  * whose content is to be displayed, the function also receives the
  * terminal dimensions.
  */
-void do_more(const char *filename, const size_t hsize, const size_t vsize)
-{
+void do_more(const char *filename, const size_t hsize, const size_t vsize) {
     const size_t maxline = hsize + 256;
     char *line = new char[maxline + 1];
     line[maxline] = '\0';
@@ -122,8 +113,7 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize)
     printf("--- more: %s ---\n", filename);
 
     int fd = open(filename, O_RDONLY);
-    if (fd < 0)
-    {
+    if (fd < 0) {
         sprintf(line, "more: %s", filename);
         perror(line);
         delete[] line;
@@ -131,15 +121,11 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize)
     }
 
     // main loop
-    while (1)
-    {
-        for (size_t i = 0; i < vsize; i++)
-        {
+    while (1) {
+        for (size_t i = 0; i < vsize; i++) {
             int n = readline(fd, line, maxline);
-            if (n < 0)
-            {
-                if (n != recv_nodata)
-                { // error condition
+            if (n < 0) {
+                if (n != recv_nodata) { // error condition
                     sprintf(line, "more: %s", filename);
                     perror(line);
                 }
@@ -155,8 +141,7 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize)
         printf(":");
         fflush(stdout);
         fgets(line, 10, stdin);
-        if (line[0] != ' ')
-        {
+        if (line[0] != ' ') {
             close(fd);
             delete[] line;
             return;
@@ -165,10 +150,9 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize)
     delete[] line;
 }
 
-int main(int argc, char **argv, char **envp)
-{
+int main(int argc, char **argv, char **envp) {
     size_t hsize = 0, vsize = 0; // terminal dimensions, read from
-                                 // the config file
+    // the config file
     char command[129];           // buffer for commands
     command[128] = '\0';
     char *com_tok[129]; // buffer for the tokenized commands
@@ -178,14 +162,12 @@ int main(int argc, char **argv, char **envp)
 
     // Config:
     int confd = open(config, O_RDONLY);
-    if (confd < 0)
-    {
+    if (confd < 0) {
         perror("config");
         fprintf(stderr, "config: cannot open the configuration file.\n");
         fprintf(stderr, "config: will now attempt to create one.\n");
         confd = open(config, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-        if (confd < 0)
-        {
+        if (confd < 0) {
             // cannot open the file, giving up.
             perror(config);
             fprintf(stderr, "config: giving up...\n");
@@ -194,8 +176,7 @@ int main(int argc, char **argv, char **envp)
         close(confd);
         // re-open the file read-only
         confd = open(config, O_RDONLY);
-        if (confd < 0)
-        {
+        if (confd < 0) {
             // cannot open the file, we'll probably never reach this
             // one but who knows...
             perror(config);
@@ -205,13 +186,11 @@ int main(int argc, char **argv, char **envp)
     }
 
     // read terminal size
-    while (hsize == 0 || vsize == 0)
-    {
+    while (hsize == 0 || vsize == 0) {
         int n = readline(confd, command, 128);
         if (n == recv_nodata)
             break;
-        if (n < 0)
-        {
+        if (n < 0) {
             sprintf(command, "config: %s", config);
             perror(command);
             break;
@@ -228,8 +207,7 @@ int main(int argc, char **argv, char **envp)
     }
     close(confd);
 
-    if (hsize <= 0)
-    {
+    if (hsize <= 0) {
         // invalid horizontal size, will use defaults (and write them
         // in the configuration file)
         hsize = 75;
@@ -239,8 +217,7 @@ int main(int argc, char **argv, char **envp)
         fprintf(stderr, "%s: cannot obtain a valid horizontal terminal size, will use the default\n",
                 config);
     }
-    if (vsize <= 0)
-    {
+    if (vsize <= 0) {
         // invalid vertical size, will use defaults (and write them in
         // the configuration file)
         vsize = 40;
@@ -251,21 +228,19 @@ int main(int argc, char **argv, char **envp)
                 config);
     }
 
-    printf("Terminal set to %ux%u.\n", (unsigned int)hsize, (unsigned int)vsize);
+    printf("Terminal set to %ux%u.\n", (unsigned int) hsize, (unsigned int) vsize);
 
     // install the typical signal handler for zombie cleanup
     // (we will inhibit it later when we need a different behaviour,
     // see run_it)
     signal(SIGCHLD, zombie_reaper);
     // Command loop:
-    while (1)
-    {
+    while (1) {
 
         // Read input:
         printf("%s", prompt);
         fflush(stdin);
-        if (fgets(command, 128, stdin) == 0)
-        {
+        if (fgets(command, 128, stdin) == 0) {
             // EOF, will quit
             printf("\nBye\n");
             return 0;
@@ -276,14 +251,13 @@ int main(int argc, char **argv, char **envp)
 
         // Tokenize input:
         char **real_com = com_tok; // may need to skip the first
-                                   // token, so we use a pointer to
-                                   // access the tokenized command
+        // token, so we use a pointer to
+        // access the tokenized command
         num_tok = str_tokenize(command, real_com, strlen(command));
         real_com[num_tok] = 0; // null termination for execve
 
         int bg = 0;
-        if (strcmp(com_tok[0], "&") == 0)
-        { // background command coming
+        if (strcmp(com_tok[0], "&") == 0) { // background command coming
 #ifdef DEBUG
             fprintf(stderr, "%s: background command\n", __FILE__);
 #endif
@@ -292,32 +266,42 @@ int main(int argc, char **argv, char **envp)
             // specifies a background process...
             real_com = com_tok + 1;
         }
-        
+
         // Process input:
         if (strlen(real_com[0]) == 0) // no command, luser just pressed return
             continue;
 
 
         // ASSERT: num_tok > 0
-        if (real_com[0][0] != '!' && real_com[0][1] != ' ')
-        {
+        if (real_com[0][0] != '!' && real_com[0][1] != ' ') {
             printf("server\n");
             // init server params
-            int response = connectbyport("10.18.0.22", "9001");
-            printf("response is %d\n", response);
-        }
-        else
-        {
-            real_com[0] = &(real_com[0][2]);
+            int sock = connectbyport("10.18.0.22", "9001");
+            printf("response is %d\n", sock);
+            if (sock > 1) {
+                if (send(sock, real_com[0], strlen(real_com[0]), 0) > 0) {
 
-            if (strcmp(real_com[0], "exit") == 0)
-            {
-                printf("Bye\n");
-                return 0;
+                    //Receive a reply from the server
+                    if( recv(sock , server_reply , 2000 , 0) < 0)
+                    {
+                        puts("recv failed");
+                        break;
+                    }
+
+                    puts("Server reply :");
+                    puts(server_reply);
+
+                close(sock);
+                }
             }
 
-            else if (strcmp(real_com[0], "more") == 0)
-            {
+        } else {
+            real_com[0] = &(real_com[0][2]);
+
+            if (strcmp(real_com[0], "exit") == 0) {
+                printf("Bye\n");
+                return 0;
+            } else if (strcmp(real_com[0], "more") == 0) {
                 // note: more never goes into background (any prefixing
                 // `&' is ignored)
                 if (real_com[1] == 0)
@@ -325,32 +309,22 @@ int main(int argc, char **argv, char **envp)
                 // list all the files given in the command line arguments
                 for (size_t i = 1; real_com[i] != 0; i++)
                     do_more(real_com[i], hsize, vsize);
-            }
-
-            else
-            { // external command
-                if (bg)
-                {   // background command, we fork a process that
+            } else { // external command
+                if (bg) {   // background command, we fork a process that
                     // awaits for its completion
                     int bgp = fork();
-                    if (bgp == 0)
-                    { // child executing the command
+                    if (bgp == 0) { // child executing the command
                         int r = run_it(real_com[0], real_com, envp, path);
                         printf("& %s done (%d)\n", real_com[0], WEXITSTATUS(r));
-                        if (r != 0)
-                        {
+                        if (r != 0) {
                             printf("& %s completed with a non-null exit code\n", real_com[0]);
                         }
                         return 0;
-                    }
-                    else // parent goes ahead and accepts the next command
+                    } else // parent goes ahead and accepts the next command
                         continue;
-                }
-                else
-                { // foreground command, we execute it and wait for completion
+                } else { // foreground command, we execute it and wait for completion
                     int r = run_it(real_com[0], real_com, envp, path);
-                    if (r != 0)
-                    {
+                    if (r != 0) {
                         printf("%s completed with a non-null exit code (%d)\n", real_com[0], WEXITSTATUS(r));
                     }
                 }
