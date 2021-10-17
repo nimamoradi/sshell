@@ -276,7 +276,7 @@ int main (int argc, char** argv, char** envp) {
             continue;
 
     // ASSERT: num_tok > 0
-        printf(real_com[0][0]);
+        printf("%c",real_com[0][0]);
         if(real_com[0][0] == '!'){
                printf("server");
         }
