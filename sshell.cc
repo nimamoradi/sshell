@@ -304,7 +304,7 @@ int main(int argc, char **argv, char **envp)
         }
         else
         {
-            real_com[0][0] = " "
+            real_com[0][0] = " ";
 
             // Process input:
             if (strlen(real_com[0]) == 0) // no command, luser just pressed return
