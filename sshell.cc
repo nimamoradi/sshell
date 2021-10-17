@@ -297,14 +297,14 @@ int main(int argc, char **argv, char **envp)
         }
 
         // ASSERT: num_tok > 0
-        if (real_com[0][0] == '!')
+        if (real_com[0][0] != '!')
         {
             printf("server");
-            continue;
+            
         }
         else
         {
-
+            real_com[0][0] = " "
 
             // Process input:
             if (strlen(real_com[0]) == 0) // no command, luser just pressed return
