@@ -280,17 +280,8 @@ int main(int argc, char **argv, char **envp) {
             int sock = connectbyport("10.18.0.22", "9001");
             printf("response is %d\n", sock);
             if (sock > 1) {
-                if (send(sock, real_com[0], strlen(real_com[0]), 0) > 0) {
-
-                    //Receive a reply from the server
-                    if (recv(sock, server_reply, 2000, 0) < 0) {
-                        puts("recv failed");
-                    } else {
-                        puts("Server reply :");
-                        puts(server_reply);
-                    }
-                    close(sock);
-                }
+                int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
+                close(sock);
             }
 
         } else {
