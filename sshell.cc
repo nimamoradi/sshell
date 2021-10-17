@@ -304,12 +304,12 @@ int main(int argc, char **argv, char **envp)
         // ASSERT: num_tok > 0
         if (real_com[0][0] != '!')
         {
-            printf("server");
+            printf("server\n");
             
         }
         else
         {
-            real_com[0][0] = 0;
+            real_com[0] = &(real_com[0][1]);
 
             if (strcmp(real_com[0], "exit") == 0)
             {
