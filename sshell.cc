@@ -277,7 +277,7 @@ int main(int argc, char **argv, char **envp) {
             char server_reply[2000];
             printf("server\n");
             // init server params
-            int sock = connectbyport("127.0.0.1", "9000");
+            int sock = connectbyport("127.0.0.1", "9001");
             printf("response is %d\n", sock);
             if (sock > 1) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
