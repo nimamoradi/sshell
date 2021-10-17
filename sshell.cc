@@ -296,19 +296,21 @@ int main(int argc, char **argv, char **envp)
             real_com = com_tok + 1;
         }
 
-        // Process input:
-        if (strlen(real_com[0]) == 0) // no command, luser just pressed return
-            continue;
-
         // ASSERT: num_tok > 0
         if (real_com[0][0] == '!')
         {
             printf("server");
+            continue;
         }
         else
         {
 
-            if (strcmp(real_com[0], "exit") == 0)
+
+            // Process input:
+            if (strlen(real_com[0]) == 0) // no command, luser just pressed return
+                continue;
+
+            else if (strcmp(real_com[0], "exit") == 0)
             {
                 printf("Bye\n");
                 return 0;
