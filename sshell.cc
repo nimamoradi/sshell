@@ -311,7 +311,7 @@ int main(int argc, char **argv, char **envp)
         {
             real_com[0][0] = ' ';
 
-            else if (strcmp(real_com[0], "exit") == 0)
+            if (strcmp(real_com[0], "exit") == 0)
             {
                 printf("Bye\n");
                 return 0;
