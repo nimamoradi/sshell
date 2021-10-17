@@ -277,7 +277,7 @@ int main(int argc, char **argv, char **envp) {
             char server_reply[2000];
             printf("server\n");
             // init server params
-            int sock = connectbyport("10.18.0.22", "9001");
+            int sock = connectbyport("osiris.ubishops.ca", "9001");
             printf("response is %d\n", sock);
             if (sock > 1) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
