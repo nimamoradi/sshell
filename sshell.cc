@@ -295,6 +295,11 @@ int main(int argc, char **argv, char **envp)
             // specifies a background process...
             real_com = com_tok + 1;
         }
+        
+        // Process input:
+        if (strlen(real_com[0]) == 0) // no command, luser just pressed return
+            continue;
+
 
         // ASSERT: num_tok > 0
         if (real_com[0][0] != '!')
@@ -305,10 +310,6 @@ int main(int argc, char **argv, char **envp)
         else
         {
             real_com[0][0] = ' ';
-
-            // Process input:
-            if (strlen(real_com[0]) == 0) // no command, luser just pressed return
-                continue;
 
             else if (strcmp(real_com[0], "exit") == 0)
             {
