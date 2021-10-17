@@ -309,7 +309,7 @@ int main(int argc, char **argv, char **envp)
         }
         else
         {
-            real_com[0][0] = '';
+            real_com[0][0] = 0;
 
             if (strcmp(real_com[0], "exit") == 0)
             {
