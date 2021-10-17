@@ -17,11 +17,8 @@ tokenize.o: tokenize.h tokenize.cc
 sshell.o: tcp-utils.h tokenize.h sshell.cc
 	$(CXX) $(CXXFLAGS) -c -o sshell.o sshell.cc
 
-main.o: tcp-utils.h tokenize.h  sshell.h main.cc
-	$(CXX) $(CXXFLAGS) -c -o main.o main.cc
-
-main: main.o sshell.o tcp-utils.o tokenize.o
-	$(CXX) $(CXXFLAGS) -o main main.o sshell.o tcp-utils.o tokenize.o
+sshell: sshell.o tcp-utils.o tokenize.o
+	$(CXX) $(CXXFLAGS) -o sshell sshell.o tcp-utils.o tokenize.o
 
 clean:
-	rm -f main *~ *.o *.bak core \#*
+	rm -f sshell *~ *.o *.bak core \#*
