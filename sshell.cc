@@ -274,6 +274,7 @@ int main(int argc, char **argv, char **envp) {
 
         // ASSERT: num_tok > 0
         if (real_com[0][0] != '!' && real_com[0][1] != ' ') {
+            char server_reply[2000];
             printf("server\n");
             // init server params
             int sock = connectbyport("10.18.0.22", "9001");
