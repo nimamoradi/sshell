@@ -257,9 +257,6 @@ int main(int argc, char **argv, char **envp)
     // (we will inhibit it later when we need a different behaviour,
     // see run_it)
     signal(SIGCHLD, zombie_reaper);
-    // init server params
-    int response = connectbyport("10.18.0.22", "9001");
-    printf("response is %d", response);
     // Command loop:
     while (1)
     {
@@ -305,7 +302,9 @@ int main(int argc, char **argv, char **envp)
         if (real_com[0][0] != '!')
         {
             printf("server\n");
-            
+            // init server params
+            int response = connectbyport("10.18.0.22", "9001");
+            printf("response is %d", response);
         }
         else
         {
