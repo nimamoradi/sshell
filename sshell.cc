@@ -283,16 +283,13 @@ int main(int argc, char **argv, char **envp) {
                 if (send(sock, real_com[0], strlen(real_com[0]), 0) > 0) {
 
                     //Receive a reply from the server
-                    if( recv(sock , server_reply , 2000 , 0) < 0)
-                    {
+                    if (recv(sock, server_reply, 2000, 0) < 0) {
                         puts("recv failed");
-                        break;
+                    } else {
+                        puts("Server reply :");
+                        puts(server_reply);
                     }
-
-                    puts("Server reply :");
-                    puts(server_reply);
-
-                close(sock);
+                    close(sock);
                 }
             }
 
