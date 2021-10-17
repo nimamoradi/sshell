@@ -283,7 +283,7 @@ int main(int argc, char **argv, char **envp) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
                 printf("send is %d\n", snd);
                 //Receive a reply from the server
-                int rec = recv(sock , server_reply , 2000 , 0);
+                int rec = recv_nonblock(sock , server_reply , 2000 , 1000);
                 printf("rec is %d\n", rec);
 
                 puts("Server reply :");
