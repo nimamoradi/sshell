@@ -14,7 +14,7 @@ tcp-utils.o: tcp-utils.h tcp-utils.cc
 tokenize.o: tokenize.h tokenize.cc
 	$(CXX) $(CXXFLAGS) -c -o tokenize.o tokenize.cc
 
-rsshell.o: tcp-utils.h tokenize.h sshell.cc
+rsshell.o: tcp-utils.h tokenize.h rsshell.cc
 	$(CXX) $(CXXFLAGS) -c -o rsshell.o rsshell.cc
 
 rsshell: rsshell.o tcp-utils.o tokenize.o
