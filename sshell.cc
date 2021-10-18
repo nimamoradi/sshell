@@ -152,7 +152,7 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize) {
 
 int main(int argc, char **argv, char **envp) {
     size_t hsize = 0, vsize = 0; // terminal dimensions, read from
-    char* RHOST = 0, RPORT = 0; // terminal dimensions, read from
+    char *RHOST = 0, RPORT = 0; // terminal dimensions, read from
     // the config file
     char command[129];           // buffer for commands
     command[128] = '\0';
@@ -239,6 +239,9 @@ int main(int argc, char **argv, char **envp) {
     // (we will inhibit it later when we need a different behaviour,
     // see run_it)
     signal(SIGCHLD, zombie_reaper);
+
+    int keepalive = 0;
+    int sock = -5;
     // Command loop:
     while (1) {
 
@@ -280,19 +283,19 @@ int main(int argc, char **argv, char **envp) {
         // ASSERT: num_tok > 0
         if (real_com[0][0] != '!' && real_com[0][1] != ' ') {
             char server_reply[2000];
-            printf("server\n");
             // init server params
-            int sock = connectbyport(RHOST, RPORT);
-            printf("response is %d\n", sock);
+            if (sock < 0 && keepalive)
+                sock = connectbyport(RHOST, RPORT);
             if (sock > 1) {
                 int snd = send(sock, real_com[0], strlen(real_com[0]), 0);
                 printf("send is %d\n", snd);
                 //Receive a reply from the server
-                int rec = recv_nonblock(sock , server_reply , 2000 , 2000);
+                int rec = recv_nonblock(sock, server_reply, 2000, 2000);
                 printf("rec is %d\n", rec);
 
                 printf("Server reply : %s \n", server_reply);
-                close(sock);
+                if(!keepalive)
+                    close(sock);
             }
 
         } else {
@@ -309,6 +312,14 @@ int main(int argc, char **argv, char **envp) {
                 // list all the files given in the command line arguments
                 for (size_t i = 1; real_com[i] != 0; i++)
                     do_more(real_com[i], hsize, vsize);
+            } else if (strcmp(real_com[0], "keepalive") == 0) {
+                // note: keepalive never goes into background (any prefixing
+                // `&' is ignored)
+                keepalive = 1;
+            } else if (strcmp(real_com[0], "close") == 0) {
+                // note: keepalive never goes into background (any prefixing
+                // `&' is ignored)
+                keepalive = 0;
             } else { // external command
                 if (bg) {   // background command, we fork a process that
                     // awaits for its completion
