@@ -6,7 +6,7 @@
 #CXXFLAGS = -g -Wall -pedantic -DDEBUG
 CXXFLAGS = -g -Wall -pedantic
 
-all: sshell
+all: rsshell
 
 tcp-utils.o: tcp-utils.h tcp-utils.cc
 	$(CXX) $(CXXFLAGS) -c -o tcp-utils.o tcp-utils.cc
@@ -14,11 +14,11 @@ tcp-utils.o: tcp-utils.h tcp-utils.cc
 tokenize.o: tokenize.h tokenize.cc
 	$(CXX) $(CXXFLAGS) -c -o tokenize.o tokenize.cc
 
-sshell.o: tcp-utils.h tokenize.h sshell.cc
-	$(CXX) $(CXXFLAGS) -c -o sshell.o sshell.cc
+rsshell.o: tcp-utils.h tokenize.h sshell.cc
+	$(CXX) $(CXXFLAGS) -c -o rsshell.o rsshell.cc
 
-rsshell: sshell.o tcp-utils.o tokenize.o
-	$(CXX) $(CXXFLAGS) -o rsshell sshell.o tcp-utils.o tokenize.o
+rsshell: rsshell.o tcp-utils.o tokenize.o
+	$(CXX) $(CXXFLAGS) -o rsshell rsshell.o tcp-utils.o tokenize.o
 
 clean:
 	rm -f rsshell *~ *.o *.bak core \#*
