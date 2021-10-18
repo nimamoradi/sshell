@@ -152,7 +152,7 @@ void do_more(const char *filename, const size_t hsize, const size_t vsize) {
 
 int main(int argc, char **argv, char **envp) {
     size_t hsize = 0, vsize = 0; // terminal dimensions, read from
-    char *RHOST = 0, RPORT = 0; // terminal dimensions, read from
+    char *RHOST = 0, *RPORT = 0; // terminal dimensions, read from
     // the config file
     char command[129];           // buffer for commands
     command[128] = '\0';
